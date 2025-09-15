@@ -14,7 +14,7 @@ Modules could be managed locally or added through a symbolic link to a external 
 
  - Local private environment managed through `pyenv`.
  - Docker Compose setup, including PostgreSQL and Adminer.
- - Easy IDE setup.
+ - Easy IDE integration.
 
 ## Requirements ##
 
@@ -31,9 +31,22 @@ Clone this repository along with its submodules. This will add the `odoo` reposi
  git clone --recurse-submodules
 ```
 
-Proceed to create the virtual ennironment by running `make setup`. This will create a new virtual environment in `.venv`.
+Proceed to create the virtual ennironment by running `make setup`. This will create a new virtual environment named `odoo_workspace_venv`, which you can find in `~/.pyenv/versions/odoo_workspace_venv`.
 
-To activate the virtual environment and install the dependencies run `make install`. This will install all packages included in `requirements.txt`.
+To activate the virtual environment run `pyenv activate odoo_workspace_venv`.
+
+If this fails, check that your `~/.profile` includes the following lines:
+
+```
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+eval "$(pyenv virtualenv-init -)"
+```
+
+Reload the file (`source ~/.profile`) and try again.
+
+Install the environment dependencies by doing `make install`. This will install all packages included in `requirements.txt`.
 
 **Note***: the list of dependencies has been modified to avoid certain issues with some packages (specifically `gevent` and `greenlet`).
 
@@ -53,7 +66,7 @@ A Docker Compose file is already included with this repository. This file reads 
 
 Containers are connected through an external network (`odoo_workspace`). Run `make network` to create it. Once done, start both containers by doing `docker compose up -d`. This will run `postgres` at `5432` and `adminer` at `8081`. The database port IS EXPOSED.
 
-In order to access the database from Adminer use the following values:
+In order to access the database from Adminer, navigate to http://localhost:8081 and put the following values:
 
  - Engine: PostgreSQL
  - Host: postgres
@@ -64,17 +77,13 @@ In order to access the database from Adminer use the following values:
 
 ### PyCharm ###
 
-Open the workspace folder and go to the *Settings*. Add a new *Interpreter* and pick the one installed in `.venv` (`$WORKPACE_DIR/.venv/bin/python3.10`). Verify that the list of packages is correct.
+Open the workspace folder and go to *Settings*. Add a new *Interpreter* and pick the one installed as `odoo_workspace_venv` (`~/.pyenv/versions/odoo_workspace_venv/bin/python3.10`). Verify that the list of packages is correct. It should list all dependencies available in `requirements.txt`.
 
-Add a new *Run Configuration*. Make sure it uses the same interpreter declared in the previous step. Select the `script` option from the list and set the executable path to `$WORKPACE_DIR/odoo/odoo-bin`. Add the following flags: `-c odoo.conf`. Set the *Working Directory* as the one including the `odoo` repository (`$WORKPACE_DIR/odoo`).
+Add a new *Run Configuration*. Make sure it uses the same interpreter declared in the previous step. Select the `script` option from the list and set the executable path to `$WORKPACE_DIR/odoo/odoo-bin`. Set the following flags: `-c odoo.conf -i base`. Set the *Working Directory* as the one including the `odoo` repository (`$WORKPACE_DIR/odoo`).
 
 Apply changes and run.
 
 ## Additional targets ##
-
-### activate ###
-
-Activates the virtual environment. It assumes you already did the setup.
 
 ### up ###
 
