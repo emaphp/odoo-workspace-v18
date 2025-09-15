@@ -1,8 +1,8 @@
 # The Python version to use
 PYTHON_VERSION := 3.10.18
 
-# The name of the folder containing the virtual environment
-ODOO_VENV := .venv
+# The name of the virtual environment
+ODOO_VENV := odoo_workspace_venv
 
 # The Docker volume storing the Odoo database
 PG_VOLUME := odoo-workspace-v18_pg_odoo
@@ -19,10 +19,7 @@ setup:
 	pyenv local $(PYTHON_VERSION)
 	pyenv virtualenv $(PYTHON_VERSION) $(ODOO_VENV)
 
-activate:
-	pyenv activate $(ODOO_VENV)
-
-install: activate
+install:
 	pip install -r requirements.txt
 
 symlink:
@@ -44,4 +41,4 @@ purge:
 update:
 	git submodule update --remote
 
-.PHONY: setup activate install symlink network up down purge update
+.PHONY: setup install symlink network up down purge update
