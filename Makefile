@@ -5,6 +5,7 @@ PYTHON_VERSION := 3.10.18
 ODOO_VENV := odoo_workspace_venv
 
 # The Docker volume storing the Odoo database
+# Note: should include COMPOSE_PROJECT_NAME as a prefix (check .env)
 PG_VOLUME := odoo-workspace-v18_pg_odoo
 
 # The Docker network to use
@@ -41,4 +42,9 @@ purge:
 update:
 	git submodule update --remote
 
-.PHONY: setup install symlink network up down purge update
+shell:
+	@eval "$$(pyenv init -)" && \
+	pyenv activate ${ODOO_VENV} && \
+	python odoo/odoo-bin shell -c odoo/odoo.conf
+
+.PHONY: setup install symlink network up down purge update shell

@@ -93,6 +93,10 @@ Runs `docker compose up -d`
 
 Runs `docker compose down`
 
+### shell ###
+
+Starts a new Odoo Shell session.
+
 ### purge ###
 
 Closes all running containers and deletes the database volume. **Warning**: This will DELETE all data from your Odoo instance.
